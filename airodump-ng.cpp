@@ -240,10 +240,12 @@ int main(int argc, char **argv)
 						ieee->bssId[0], ieee->bssId[1], ieee->bssId[2],
 						ieee->bssId[3], ieee->bssId[4], ieee->bssId[5]
 					);
+					/*
 					sprintf(proberesponse.station, "%02X:%02X:%02X:%02X:%02X:%02X",
 						ieee->destinationAddress[0], ieee->destinationAddress[1], ieee->destinationAddress[2],
 						ieee->destinationAddress[3], ieee->destinationAddress[4], ieee->destinationAddress[5]
 					);
+					*/
 					if (!proberesponse.getESSID)
 					{
 						memcpy(SSID, (u_char *)ieee_wt + sizeof(IEEE_802_11_WIRELESS_TAGGED), ieee_wt->tagLength);
