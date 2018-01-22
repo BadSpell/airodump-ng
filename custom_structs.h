@@ -67,7 +67,7 @@ typedef struct _IEEE_802_11_WIRELESS_TAGGED
 	u_int8_t tagLength;
 } __attribute__((packed)) IEEE_802_11_WIRELESS_TAGGED, *LPIEEE_802_11_WIRELESS_TAGGED;
 
-typedef struct _AIRODUMP_INFO
+typedef struct _BEACONFRAME_INFO
 {
 	int beaconCount;
 	int data;
@@ -81,6 +81,22 @@ typedef struct _AIRODUMP_INFO
 	char enc[16];
 	char cipher[16];
 	char auth[16];
-} AIRODUMP_INFO, *LPAIRODUMP_INFO;
+} BEACONFRAME_INFO, *LPBEACONFRAME_INFO;
+
+//iter->second.BSSID, iter->second.station,
+//			iter->second.ssiSignal, iter->second.rate, iter->lost,
+//			iter->second.frames, iter->second.probe
+typedef struct _PROBERESPONSE_INFO
+{
+	char BSSID[19];
+	bool getESSID;
+	char station[19];
+	char ssiSignal;
+	char rate[16];
+	int lost;
+	int frames;
+	char probe[33];
+} PROBERESPONSE_INFO, *LPPROBERESPONSE_INFO;
+
 
 #endif
