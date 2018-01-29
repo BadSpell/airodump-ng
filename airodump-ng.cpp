@@ -34,7 +34,6 @@ void display_update()
 	for (map<unsigned __int128, PROBERESPONSE_INFO>::iterator iter = prmap.begin(); iter != prmap.end(); iter++)
 	{
 		//unsigned long long key = iter->first & 0xFFFFFFFFFFFFFFFF;
-
 		printf(" %-19s%-20s%3d  %-3s %6d %5d      %-5s\n", iter->second.BSSID, iter->second.station,
 			iter->second.ssiSignal, iter->second.rate, iter->second.lost,
 			iter->second.frames, iter->second.probe);
@@ -77,7 +76,7 @@ int main(int argc, char **argv)
 	long long tick = 0;
 	while ((pn_result = pcap_next_ex(handle, &header, &captured_packet)) >= 0)
 	{
-		if (tickCount() - tick > 250) // Send ARP Spoofing interval 1 second
+		if (tickCount() - tick > 250)
 		{
 			tick = tickCount();
 			display_update();
@@ -91,31 +90,10 @@ int main(int argc, char **argv)
 			continue;
 
 		LPRADIOTAP_HEADER radioTap = (LPRADIOTAP_HEADER)captured_packet;
-
-		/* For debugging
-		static int count = 0;
-
-		count++;
-		printf("--------- FRAME NUMBER %d ---------\n", count);
-		for (int j = 0; j < 0x30; j += 0x10 )
-		{
-			for (int i = 0; i < 0x10; i++)
-				printf("%02X ", captured_packet[j + i]);
-			printf("\n");
-		}
-		printf("\n");
-		if (count != 10)
-			continue;
-		return 0;
-		/**/
-
 		LPIEEE_802_11 ieee = (LPIEEE_802_11)(captured_packet + radioTap->headerLength);
 
 		if (ieee->frameControl_Version)
 			continue;
-
-		//if (ieee->Flags)
-		//	continue;
 
 		unsigned long long key = 0;
 		memcpy(&key, ieee->bssId, 6);
@@ -127,8 +105,10 @@ int main(int argc, char **argv)
 		int tagLength = header->caplen - ((unsigned long)captured_packet - (unsigned long)ieee_wt);
 	
 		if (ieee->frameControl_Type == 2) // data frame
-			bfmap[key].data++;
-
+		{
+			if (!radioTap->_reserved1)
+				bfmap[key].data++;
+		}
 		if (ieee->frameControl_Type == 0 && ieee->frameControl_Subtype == 8) // beacon frame
 		{
 			BEACONFRAME_INFO beaconframe = bfmap[key];
